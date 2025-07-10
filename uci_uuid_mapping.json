@@ -1,0 +1,18 @@
+{
+  "firewall:defaults:defaults_0": "a8b60b9f-cf67-41dc-a8e4-35969c8d02f2",
+  "firewall:zone:zone_5": "9e44461e-db95-4f66-8a85-713268e706a6",
+  "firewall:zone:zone_11": "167caae4-9379-4605-ae88-3bf6a1bbd8a5",
+  "firewall:forwarding:forwarding_19": "420c6092-f00c-48ea-9a01-b951a4cc914e",
+  "firewall:rule:rule_22": "4cc993b7-97bd-4b99-b3a3-1a440e0fbb26",
+  "firewall:rule:rule_29": "6fcd72a8-92ca-4f9e-99f9-5459f4d6cd82",
+  "firewall:rule:rule_36": "f8c13e69-90bc-4925-b9cd-fc16406a0a0d",
+  "network:interface:loopback": "401aff04-bf0e-4e3c-8503-1b801c2cc874",
+  "network:interface:lan": "c3903cc8-ca2d-411b-ae07-ad88d2be6e0c",
+  "network:interface:wan": "85be3791-dcda-488b-8152-89fc37c41d63",
+  "system:system:system_0": "143e6afc-0631-4526-a50a-5e9bab23a20c",
+  "system:timeserver:ntp": "024e952f-ee0c-452f-b810-025cc8b03c4c",
+  "wireless:wifi:wifi_0": "b2ede9ba-f5e0-470f-9b4c-2b035ef41909",
+  "wireless:wifi:wifi_8": "f7d53f03-8219-4139-97bc-6319c6b67787",
+  "wireless:wifi:wifi_15": "cf47cbfd-0ec2-4375-82a2-0ee39c8af97c",
+  "wireless:wifi:wifi_23": "0bbedca4-562d-4aad-a3e6-725ce7622d5f"
+}

@@ -1,14 +1,16 @@
-config system
-	option hostname 'OpenWrt'
-	option timezone 'UTC'
-	option ttylogin '0'
-	option log_size '64'
-	option urandom_seed '0'
- 
+config system 'system_0'
+	option uuid '143e6afc-0631-4526-a50a-5e9bab23a20c'
+	option hostname OpenWrt
+	option timezone UTC
+	option ttylogin 0
+	option log_size 64
+	option urandom_seed 0
+
 config timeserver 'ntp'
-	option enabled '1'
-	option enable_server '0'
-	list server '0.openwrt.pool.ntp.org'
-	list server '1.openwrt.pool.ntp.org'
-	list server '2.openwrt.pool.ntp.org'
-	list server '3.openwrt.pool.ntp.org'
+	option uuid '024e952f-ee0c-452f-b810-025cc8b03c4c'
+	option enabled 1
+	option enable_server 0
+	list server 0.openwrt.pool.ntp.org
+	list server 1.openwrt.pool.ntp.org
+	list server 2.openwrt.pool.ntp.org
+	list server 3.openwrt.pool.ntp.org

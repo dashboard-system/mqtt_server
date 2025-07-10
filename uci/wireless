@@ -1,0 +1,37 @@
+config wifi 'wifi_0'
+	option uuid 'b2ede9ba-f5e0-470f-9b4c-2b035ef41909'
+	option type mac80211
+	option channel 6
+	option hwmode 11g
+	option path platform/10180000.wmac
+	option htmode HT20
+	option txpower 20
+	option country US
+
+config wifi 'wifi_8'
+	option uuid 'f7d53f03-8219-4139-97bc-6319c6b67787'
+	option device radio0
+	option network lan
+	option mode ap
+	option ssid OpenWrt
+	option encryption psk2
+	option key wireless_password
+
+config wifi 'wifi_15'
+	option uuid 'cf47cbfd-0ec2-4375-82a2-0ee39c8af97c'
+	option type mac80211
+	option channel 36
+	option hwmode 11a
+	option path pci0000:00/0000:00:1c.5/0000:02:00.0
+	option htmode VHT80
+	option txpower 23
+	option country US
+
+config wifi 'wifi_23'
+	option uuid '0bbedca4-562d-4aad-a3e6-725ce7622d5f'
+	option device radio1
+	option network lan
+	option mode ap
+	option ssid OpenWrt_5G
+	option encryption psk2
+	option key wireless_password

@@ -1,0 +1,21 @@
+config interface 'loopback'
+	option uuid '401aff04-bf0e-4e3c-8503-1b801c2cc874'
+	option ifname lo
+	option proto static
+	option ipaddr 127.0.0.1
+	option netmask 255.0.0.0
+
+config interface 'lan'
+	option uuid 'c3903cc8-ca2d-411b-ae07-ad88d2be6e0c'
+	option ifname eth0
+	option proto static
+	option ipaddr 192.168.1.1
+	option netmask 255.255.255.0
+	list dns 8.8.8.8
+	list dns 8.8.4.4
+
+config interface 'wan'
+	option uuid '85be3791-dcda-488b-8152-89fc37c41d63'
+	option ifname eth1
+	option proto dhcp
+	option metric 10
