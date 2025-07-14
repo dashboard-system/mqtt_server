@@ -57,6 +57,7 @@ npm start
 ```
 
 **Access Points:**
+
 - **MQTT**: `mqtt://localhost:1883`
 - **MQTT WebSocket**: `ws://localhost:8883`
 - **REST API**: `http://localhost:3000`
@@ -65,10 +66,12 @@ npm start
 ## 💻 Installation
 
 ### Prerequisites
-- Node.js 16+ 
+
+- Node.js 16+
 - npm 7+
 
 ### Setup
+
 ```bash
 # Install dependencies
 npm install
@@ -112,43 +115,50 @@ LOG_DIR=./logs
 
 ### Configuration Options
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NODE_ENV` | `development` | Environment mode (development/production) |
-| `LOG_LEVEL` | `info` | Logging level (error/warn/info/debug) |
-| `MQTT_HOST` | `0.0.0.0` | MQTT broker bind address |
-| `MQTT_PORT` | `1883` | MQTT broker port |
-| `MQTT_WS_PORT` | `8883` | MQTT WebSocket port |
-| `WEB_PORT` | `3000` | REST API port |
-| `UCI_DIR` | `./uci` | UCI files directory |
-| `BACKUP_DIR` | `./uci_backup` | Backup files directory |
-| `WRITE_UUIDS_TO_FILES` | `true` | Write UUIDs to UCI files |
+| Variable               | Default        | Description                               |
+| ---------------------- | -------------- | ----------------------------------------- |
+| `NODE_ENV`             | `development`  | Environment mode (development/production) |
+| `LOG_LEVEL`            | `info`         | Logging level (error/warn/info/debug)     |
+| `MQTT_HOST`            | `0.0.0.0`      | MQTT broker bind address                  |
+| `MQTT_PORT`            | `1883`         | MQTT broker port                          |
+| `MQTT_WS_PORT`         | `8883`         | MQTT WebSocket port                       |
+| `WEB_PORT`             | `3000`         | REST API port                             |
+| `UCI_DIR`              | `./uci`        | UCI files directory                       |
+| `BACKUP_DIR`           | `./uci_backup` | Backup files directory                    |
+| `WRITE_UUIDS_TO_FILES` | `true`         | Write UUIDs to UCI files                  |
 
 ## 📚 API Documentation
 
 ### Health & System
 
 #### Health Check
+
 ```http
 GET /health
 ```
+
 Returns server health status and basic metrics.
 
 #### System Status
+
 ```http
 GET /api/system/status
 ```
+
 Returns detailed system information including MQTT status, memory usage, and configuration.
 
 ### UCI Files
 
 #### List UCI Files
+
 ```http
 GET /api/uci/files
 ```
+
 Returns list of all available UCI configuration files.
 
 **Response:**
+
 ```json
 {
   "files": ["network", "wireless", "firewall"],
@@ -158,33 +168,41 @@ Returns list of all available UCI configuration files.
 ```
 
 #### Get All Sections in File
+
 ```http
 GET /api/uci/files/{fileName}
 ```
+
 Returns all sections in the specified UCI file.
 
 #### Get Sections by Type
+
 ```http
 GET /api/uci/files/{fileName}/{sectionName}
 ```
+
 Returns all sections of a specific type (e.g., all interfaces).
 
 **Example:**
+
 ```http
 GET /api/uci/files/network/interface
 ```
 
 #### Get Specific Section
+
 ```http
 GET /api/uci/files/{fileName}/{sectionName}/{uuid}
 ```
+
 Returns a specific UCI section by UUID.
 
 **Response:**
+
 ```json
 {
   "fileName": "network",
-  "sectionName": "interface", 
+  "sectionName": "interface",
   "uuid": "12345678-1234-1234-1234-123456789abc",
   "section": {
     "uuid": "12345678-1234-1234-1234-123456789abc",
@@ -206,6 +224,7 @@ Returns a specific UCI section by UUID.
 ### UCI Management
 
 #### Create New Section
+
 ```http
 POST /api/uci/files/{fileName}/{sectionName}
 Content-Type: application/json
@@ -213,7 +232,7 @@ Content-Type: application/json
 {
   "values": {
     "proto": "static",
-    "ifname": "eth2", 
+    "ifname": "eth2",
     "ipaddr": "192.168.2.1",
     "netmask": "255.255.255.0"
   }
@@ -221,6 +240,7 @@ Content-Type: application/json
 ```
 
 #### Update Section
+
 ```http
 PUT /api/uci/files/{fileName}/{sectionName}/{uuid}
 Content-Type: application/json
@@ -233,19 +253,23 @@ Content-Type: application/json
 ```
 
 #### Delete Section
+
 ```http
 DELETE /api/uci/files/{fileName}/{sectionName}/{uuid}
 ```
 
 #### Reload UCI File
+
 ```http
 POST /api/uci/reload/{fileName}
 ```
+
 Reloads the UCI file from disk and republishes to MQTT.
 
 ## 📡 MQTT Topics
 
 ### Configuration Topics
+
 All UCI sections are published to retained topics following this pattern:
 
 ```
@@ -253,17 +277,19 @@ config/{fileName}/{sectionType}/{uuid}
 ```
 
 **Examples:**
+
 - `config/network/interface/12345678-1234-1234-1234-123456789abc`
 - `config/wireless/wifi-device/87654321-4321-4321-4321-cba987654321`
 - `config/firewall/rule/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
 
 **Message Format:**
+
 ```json
 {
   "uuid": "12345678-1234-1234-1234-123456789abc",
   "sectionType": "interface",
   "sectionName": "lan",
-  "fileName": "network", 
+  "fileName": "network",
   "values": {
     "proto": "static",
     "ifname": "eth0",
@@ -278,9 +304,11 @@ config/{fileName}/{sectionType}/{uuid}
 ### Command Topics
 
 #### Edit Commands
+
 ```
 commands/edit
 ```
+
 Send UCI modification commands:
 
 ```json
@@ -298,9 +326,11 @@ Send UCI modification commands:
 ```
 
 #### Reload Commands
+
 ```
 commands/reload
 ```
+
 Reload UCI files:
 
 ```json
@@ -311,9 +341,11 @@ Reload UCI files:
 ```
 
 #### Command Responses
+
 ```
 commands/response/{requestId}
 ```
+
 Receive command execution results:
 
 ```json
@@ -333,15 +365,19 @@ Receive command execution results:
 ### System Topics
 
 #### System Status
+
 ```
 system/status
 ```
+
 File operation status updates.
 
 #### Server Startup
+
 ```
 system/startup
 ```
+
 Server initialization information.
 
 ## 📄 UCI File Format
@@ -349,6 +385,7 @@ Server initialization information.
 UCI files are automatically enhanced with UUIDs:
 
 **Before:**
+
 ```
 config interface 'lan'
 	option proto 'static'
@@ -359,6 +396,7 @@ config interface 'lan'
 ```
 
 **After:**
+
 ```
 config interface 'lan'
 	option uuid '12345678-1234-1234-1234-123456789abc'
@@ -370,6 +408,7 @@ config interface 'lan'
 ```
 
 ### Supported UCI Elements
+
 - **Sections**: `config <type> ['<name>']`
 - **Options**: `option <key> <value>`
 - **Lists**: `list <key> <value>`
@@ -412,6 +451,7 @@ config interface 'lan'
 ## 🛠️ Development
 
 ### Project Structure
+
 ```
 mqtt-uci-server/
 ├── src/
@@ -427,7 +467,7 @@ mqtt-uci-server/
 │   │   │   └── index.js       # Common middleware
 │   │   ├── routes/
 │   │   │   ├── uciRoutes.js   # UCI endpoints
-│   │   │   └── systemRoutes.js # System endpoints  
+│   │   │   └── systemRoutes.js # System endpoints
 │   │   └── services/
 │   │       └── uciService.js  # Business logic
 │   └── utils/
@@ -441,6 +481,7 @@ mqtt-uci-server/
 ```
 
 ### Scripts
+
 ```bash
 npm start          # Start production server
 npm run dev        # Start development server with nodemon
@@ -458,72 +499,75 @@ npm test           # Run tests (when implemented)
 ## 📖 Examples
 
 ### MQTT Client (Node.js)
+
 ```javascript
-const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://localhost:1883');
+const mqtt = require('mqtt')
+const client = mqtt.connect('mqtt://localhost:1883')
 
 client.on('connect', () => {
   // Subscribe to all network interfaces
-  client.subscribe('config/network/interface/+');
-  
+  client.subscribe('config/network/interface/+')
+
   // Subscribe to system status
-  client.subscribe('system/status');
-});
+  client.subscribe('system/status')
+})
 
 client.on('message', (topic, message) => {
-  const data = JSON.parse(message.toString());
-  console.log(`Received update on ${topic}:`, data);
-});
+  const data = JSON.parse(message.toString())
+  console.log(`Received update on ${topic}:`, data)
+})
 
 // Send update command
 const updateCommand = {
   action: 'update',
   fileName: 'network',
-  sectionName: 'interface', 
+  sectionName: 'interface',
   uuid: '12345678-1234-1234-1234-123456789abc',
   values: { ipaddr: '192.168.1.150' },
-  requestId: 'req_' + Date.now()
-};
+  requestId: 'req_' + Date.now(),
+}
 
-client.publish('commands/edit', JSON.stringify(updateCommand));
+client.publish('commands/edit', JSON.stringify(updateCommand))
 ```
 
 ### Web Application (JavaScript)
+
 ```javascript
 // REST API usage
-const baseUrl = 'http://localhost:3000';
+const baseUrl = 'http://localhost:3000'
 
 // Get all network interfaces
 fetch(`${baseUrl}/api/uci/files/network/interface`)
-  .then(response => response.json())
-  .then(data => console.log('Interfaces:', data.sections));
+  .then((response) => response.json())
+  .then((data) => console.log('Interfaces:', data.sections))
 
 // Update an interface
 fetch(`${baseUrl}/api/uci/files/network/interface/${uuid}`, {
   method: 'PUT',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    values: { ipaddr: '192.168.1.200' }
-  })
+    values: { ipaddr: '192.168.1.200' },
+  }),
 })
-.then(response => response.json())
-.then(data => console.log('Update result:', data));
+  .then((response) => response.json())
+  .then((data) => console.log('Update result:', data))
 ```
 
 ### MQTT over WebSocket (Browser)
+
 ```html
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <script>
-const client = mqtt.connect('ws://localhost:8883');
+  const client = mqtt.connect('ws://localhost:8883')
 
-client.on('connect', () => {
-  client.subscribe('config/+/+/+');
-});
+  client.on('connect', () => {
+    client.subscribe('config/+/+/+')
+  })
 
-client.on('message', (topic, message) => {
-  const config = JSON.parse(message.toString());
-  updateUI(topic, config);
-});
+  client.on('message', (topic, message) => {
+    const config = JSON.parse(message.toString())
+    updateUI(topic, config)
+  })
 </script>
 ```
 
@@ -559,6 +603,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🔄 Changelog
 
 ### v1.0.0
+
 - Initial release
 - MQTT broker with WebSocket support
 - REST API for UCI management

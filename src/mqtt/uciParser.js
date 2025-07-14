@@ -1,8 +1,8 @@
-const { SystemLogger } = require('../utils/logger');
+const { SystemLogger } = require('../utils/logger')
 
 class UCIParser {
   constructor() {
-    this.logger = new SystemLogger('UCIParser');
+    this.logger = new SystemLogger('UCIParser')
   }
 
   /**
@@ -11,80 +11,81 @@ class UCIParser {
    * @returns {Map} - Map of section data
    */
   parse(content) {
-    const sections = new Map();
-    const lines = content.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
-    
-    let currentSection = null;
-    let currentSectionData = null;
-    
+    const sections = new Map()
+    const lines = content
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+
+    let currentSection = null
+    let currentSectionData = null
+
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      
+      const line = lines[i]
+
       try {
         if (line.startsWith('config ')) {
           // Save previous section if exists
           if (currentSection && currentSectionData) {
-            sections.set(currentSection, currentSectionData);
+            sections.set(currentSection, currentSectionData)
           }
-          
+
           // Parse section header: config <type> ['<name>']
-          const match = line.match(/^config\s+(\w+)\s*(?:'([^']+)')?/);
+          const match = line.match(/^config\s+(\w+)\s*(?:'([^']+)')?/)
           if (!match) {
-            throw new Error(`Invalid config line: ${line}`);
+            throw new Error(`Invalid config line: ${line}`)
           }
-          
-          const [, sectionType, sectionName] = match;
-          currentSection = sectionName || `${sectionType}_${i}`;
-          
+
+          const [, sectionType, sectionName] = match
+          currentSection = sectionName || `${sectionType}_${i}`
+
           currentSectionData = {
             sectionType,
             sectionName,
             values: {},
-            lineNumber: i + 1
-          };
-          
+            lineNumber: i + 1,
+          }
         } else if (line.startsWith('option ')) {
           // Parse option: option <key> <value>
-          const optionMatch = line.match(/^option\s+(\w+)\s+(.+)$/);
+          const optionMatch = line.match(/^option\s+(\w+)\s+(.+)$/)
           if (!optionMatch) {
-            throw new Error(`Invalid option line: ${line}`);
+            throw new Error(`Invalid option line: ${line}`)
           }
-          
-          const [, key, value] = optionMatch;
+
+          const [, key, value] = optionMatch
           if (currentSectionData) {
-            currentSectionData.values[key] = this.parseValue(value);
+            currentSectionData.values[key] = this.parseValue(value)
           }
-          
         } else if (line.startsWith('list ')) {
           // Parse list: list <key> <value>
-          const listMatch = line.match(/^list\s+(\w+)\s+(.+)$/);
+          const listMatch = line.match(/^list\s+(\w+)\s+(.+)$/)
           if (!listMatch) {
-            throw new Error(`Invalid list line: ${line}`);
+            throw new Error(`Invalid list line: ${line}`)
           }
-          
-          const [, key, value] = listMatch;
+
+          const [, key, value] = listMatch
           if (currentSectionData) {
             if (!currentSectionData.values[key]) {
-              currentSectionData.values[key] = [];
+              currentSectionData.values[key] = []
             }
             if (Array.isArray(currentSectionData.values[key])) {
-              currentSectionData.values[key].push(this.parseValue(value));
+              currentSectionData.values[key].push(this.parseValue(value))
             }
           }
         }
       } catch (error) {
-        this.logger.error(`Error parsing line ${i + 1}: ${line}`, error);
-        throw new Error(`Parse error at line ${i + 1}: ${error.message}`);
+        this.logger.error(`Error parsing line ${i + 1}: ${line}`, error)
+        throw new Error(`Parse error at line ${i + 1}: ${error.message}`)
       }
     }
-    
+
     // Save last section
     if (currentSection && currentSectionData) {
-      sections.set(currentSection, currentSectionData);
+      sections.set(currentSection, currentSectionData)
     }
-    
-    this.logger.debug(`Parsed ${sections.size} sections from UCI content`);
-    return sections;
+
+    this.logger.debug(`Parsed ${sections.size} sections from UCI content`)
+    return sections
   }
 
   /**
@@ -94,25 +95,27 @@ class UCIParser {
    */
   parseValue(value) {
     // Remove quotes if present
-    if ((value.startsWith("'") && value.endsWith("'")) || 
-        (value.startsWith('"') && value.endsWith('"'))) {
-      value = value.slice(1, -1);
+    if (
+      (value.startsWith("'") && value.endsWith("'")) ||
+      (value.startsWith('"') && value.endsWith('"'))
+    ) {
+      value = value.slice(1, -1)
     }
-    
+
     // Try to parse as number
     if (/^\d+$/.test(value)) {
-      return parseInt(value, 10);
+      return parseInt(value, 10)
     }
-    
+
     // Try to parse as boolean
     if (value === 'true' || value === '1') {
-      return true;
+      return true
     }
     if (value === 'false' || value === '0') {
-      return false;
+      return false
     }
-    
-    return value;
+
+    return value
   }
 
   /**
@@ -121,34 +124,34 @@ class UCIParser {
    * @returns {string} - UCI file content
    */
   serialize(sections) {
-    const lines = [];
-    
+    const lines = []
+
     for (const [sectionKey, sectionData] of sections) {
       // Write section header
-      const sectionName = sectionData.sectionName || sectionKey;
+      const sectionName = sectionData.sectionName || sectionKey
       if (sectionName === sectionData.sectionType || !sectionName) {
-        lines.push(`config ${sectionData.sectionType}`);
+        lines.push(`config ${sectionData.sectionType}`)
       } else {
-        lines.push(`config ${sectionData.sectionType} '${sectionName}'`);
+        lines.push(`config ${sectionData.sectionType} '${sectionName}'`)
       }
-      
+
       // Write options and lists
       for (const [key, value] of Object.entries(sectionData.values)) {
         if (Array.isArray(value)) {
           // Write as list entries
           for (const item of value) {
-            lines.push(`\tlist ${key} ${this.serializeValue(item)}`);
+            lines.push(`\tlist ${key} ${this.serializeValue(item)}`)
           }
         } else {
           // Write as option
-          lines.push(`\toption ${key} ${this.serializeValue(value)}`);
+          lines.push(`\toption ${key} ${this.serializeValue(value)}`)
         }
       }
-      
-      lines.push(''); // Empty line between sections
+
+      lines.push('') // Empty line between sections
     }
-    
-    return lines.join('\n');
+
+    return lines.join('\n')
   }
 
   /**
@@ -159,17 +162,22 @@ class UCIParser {
   serializeValue(value) {
     if (typeof value === 'string') {
       // Quote strings that contain spaces or special characters
-      if (value.includes(' ') || value.includes('\t') || value.includes("'") || value.includes('"')) {
-        return `'${value.replace(/'/g, "\\'")}'`;
+      if (
+        value.includes(' ') ||
+        value.includes('\t') ||
+        value.includes("'") ||
+        value.includes('"')
+      ) {
+        return `'${value.replace(/'/g, "\\'")}'`
       }
-      return value;
+      return value
     }
-    
+
     if (typeof value === 'boolean') {
-      return value ? '1' : '0';
+      return value ? '1' : '0'
     }
-    
-    return String(value);
+
+    return String(value)
   }
 
   /**
@@ -179,18 +187,18 @@ class UCIParser {
    */
   validate(content) {
     try {
-      const sections = this.parse(content);
+      const sections = this.parse(content)
       return {
         valid: true,
         sections: sections.size,
-        errors: []
-      };
+        errors: [],
+      }
     } catch (error) {
       return {
         valid: false,
         sections: 0,
-        errors: [error.message]
-      };
+        errors: [error.message],
+      }
     }
   }
 
@@ -201,15 +209,15 @@ class UCIParser {
    * @returns {Map} - Filtered sections
    */
   getSectionsByType(sections, sectionType) {
-    const filtered = new Map();
-    
+    const filtered = new Map()
+
     for (const [key, data] of sections) {
       if (data.sectionType === sectionType) {
-        filtered.set(key, data);
+        filtered.set(key, data)
       }
     }
-    
-    return filtered;
+
+    return filtered
   }
 
   /**
@@ -222,28 +230,28 @@ class UCIParser {
       totalSections: sections.size,
       sectionTypes: {},
       totalOptions: 0,
-      totalLists: 0
-    };
-    
+      totalLists: 0,
+    }
+
     for (const [key, data] of sections) {
       // Count section types
       if (!stats.sectionTypes[data.sectionType]) {
-        stats.sectionTypes[data.sectionType] = 0;
+        stats.sectionTypes[data.sectionType] = 0
       }
-      stats.sectionTypes[data.sectionType]++;
-      
+      stats.sectionTypes[data.sectionType]++
+
       // Count options and lists
       for (const [optKey, optValue] of Object.entries(data.values)) {
         if (Array.isArray(optValue)) {
-          stats.totalLists++;
+          stats.totalLists++
         } else {
-          stats.totalOptions++;
+          stats.totalOptions++
         }
       }
     }
-    
-    return stats;
+
+    return stats
   }
 }
 
-module.exports = { UCIParser };
+module.exports = { UCIParser }
