@@ -1,0 +1,30 @@
+[
+  {
+    "role": "admin",
+    "allow": [{ "topic": "#", "action": ["publish", "subscribe"] }],
+    "description": "Administrators have full access to all topics"
+  },
+  {
+    "role": "internal",
+    "allow": [
+      { "topic": "config/#", "action": ["publish", "subscribe"] },
+      { "topic": "system/#", "action": ["publish", "subscribe"] },
+      { "topic": "commands/#", "action": ["publish", "subscribe"] }
+    ],
+    "description": "Internal system access to config, system, and command topics"
+  },
+  {
+    "role": "client",
+    "allow": [
+      { "topic": "config/+/+/+", "action": ["subscribe"] },
+      { "topic": "system/status", "action": ["subscribe"] },
+      { "topic": "commands/edit", "action": ["publish"] },
+      { "topic": "commands/reload", "action": ["publish"] }
+    ],
+    "deny": [
+      { "topic": "system/startup", "action": ["publish"] },
+      { "topic": "config/+/+/+", "action": ["publish"] }
+    ],
+    "description": "Regular clients can read configs and send commands, but cannot publish config changes directly"
+  }
+]
