@@ -62,6 +62,7 @@ const defaultUciHandleWebServer = {
   host: '0.0.0.0',
   corsOrigin: '*',
 }
+
 module.exports = {
   defaultUsers,
   defaultAcl,
