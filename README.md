@@ -46,10 +46,27 @@ A comprehensive MQTT-based configuration management system for UCI (Unified Conf
 
 ## 🏃‍♂️ Quick Start
 
+### Docker (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/dashboard-system/mqtt_server
+cd mqtt_server
+
+# Start with Docker Compose
+docker-compose up -d
+
+# Check status
+docker-compose ps
+docker-compose logs -f
+```
+
+### Manual Installation
+
 ```bash
 # Clone and install
 git clone <repository>
-cd mqtt-uci-server
+cd mqtt_server
 npm install
 
 # Start the server
@@ -60,8 +77,8 @@ npm start
 
 - **MQTT**: `mqtt://localhost:1883`
 - **MQTT WebSocket**: `ws://localhost:8883`
-- **REST API**: `http://localhost:3000`
-- **Health Check**: `http://localhost:3000/health`
+- **REST API**: `http://localhost:3001`
+- **Health Check**: `http://localhost:3001/health`
 
 ## 💻 Installation
 
@@ -101,7 +118,7 @@ MQTT_PORT=1883
 MQTT_WS_PORT=8883
 
 # Web Server Configuration
-WEB_PORT=3000
+WEB_PORT=3001
 CORS_ORIGIN=*
 
 # UCI Configuration
@@ -122,7 +139,7 @@ LOG_DIR=./logs
 | `MQTT_HOST`            | `0.0.0.0`      | MQTT broker bind address                  |
 | `MQTT_PORT`            | `1883`         | MQTT broker port                          |
 | `MQTT_WS_PORT`         | `8883`         | MQTT WebSocket port                       |
-| `WEB_PORT`             | `3000`         | REST API port                             |
+| `WEB_PORT`             | `3001`         | REST API port                             |
 | `UCI_DIR`              | `./uci`        | UCI files directory                       |
 | `BACKUP_DIR`           | `./uci_backup` | Backup files directory                    |
 | `WRITE_UUIDS_TO_FILES` | `true`         | Write UUIDs to UCI files                  |
@@ -453,7 +470,7 @@ config interface 'lan'
 ### Project Structure
 
 ```
-mqtt-uci-server/
+mqtt_server/
 ├── src/
 │   ├── server.js              # Main application entry point
 │   ├── mqtt/
@@ -477,6 +494,9 @@ mqtt-uci-server/
 ├── logs/                     # Log files
 ├── package.json
 ├── .env                      # Environment configuration
+├── Dockerfile                # Docker image configuration
+├── docker-compose.yml        # Docker Compose setup
+├── supervisord.conf          # Process management configuration
 └── README.md
 ```
 
@@ -534,7 +554,7 @@ client.publish('commands/edit', JSON.stringify(updateCommand))
 
 ```javascript
 // REST API usage
-const baseUrl = 'http://localhost:3000'
+const baseUrl = 'http://localhost:3001'
 
 // Get all network interfaces
 fetch(`${baseUrl}/api/uci/files/network/interface`)
@@ -573,13 +593,80 @@ fetch(`${baseUrl}/api/uci/files/network/interface/${uuid}`, {
 
 ## 🐳 Docker Support
 
+### Docker Compose (Recommended)
+
 ```bash
-# Build and run with Docker Compose
+# Start all services
 docker-compose up -d
 
-# Or build manually
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Rebuild after code changes
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### Manual Docker Build
+
+```bash
+# Build the image
 docker build -t mqtt-uci-server .
-docker run -p 1883:1883 -p 3000:3000 -p 8883:8883 mqtt-uci-server
+
+# Run the container
+docker run -d \
+  --name mqtt-server-container \
+  -p 1883:1883 \
+  -p 3001:3001 \
+  -p 8883:8883 \
+  -v $(pwd)/logs:/app/logs \
+  -v $(pwd)/uci:/app/uci \
+  -v $(pwd)/uci_backup:/app/uci_backup \
+  mqtt-uci-server
+```
+
+### Docker Configuration
+
+The Docker setup includes:
+
+- **Supervisor**: Process management for the Node.js application
+- **Alpine Linux**: Lightweight base image with Node.js 18
+- **Volume Mounts**: Persistent storage for logs, UCI files, and backups
+- **Networking**: Proper port exposure for MQTT, WebSocket, and HTTP
+- **Environment**: Automatic environment variable loading from `.env`
+
+### Docker Ports
+
+| Port | Protocol | Service |
+|------|----------|---------|
+| 1883 | MQTT | MQTT Broker |
+| 3001 | HTTP | REST API & Health Check |
+| 8883 | WebSocket | MQTT over WebSocket |
+
+### Troubleshooting Docker
+
+```bash
+# Check container status
+docker-compose ps
+
+# View real-time logs
+docker-compose logs -f mqtt-server
+
+# Access container shell
+docker exec -it mqtt-server-container sh
+
+# Check application logs inside container
+docker exec mqtt-server-container cat /app/logs/nodeapp.log
+
+# Test MQTT connectivity
+docker exec mqtt-server-container mosquitto_pub -h 127.0.0.1 -t "test/topic" -m "test message"
+
+# Restart services
+docker-compose restart
 ```
 
 ## 📝 License
@@ -601,6 +688,16 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - **Examples**: See `examples/` directory
 
 ## 🔄 Changelog
+
+### v1.1.0
+
+- ✅ **Docker Support**: Full Docker and Docker Compose support with Alpine Linux
+- ✅ **Process Management**: Supervisor-based process management in Docker
+- ✅ **IPv4/IPv6 Fix**: Resolved MQTT client connection issues in containerized environments
+- ✅ **Port Configuration**: Updated default web server port to 3001
+- ✅ **Dependency Updates**: Fixed chalk dependency compatibility issues
+- ✅ **Volume Mounts**: Persistent storage for logs, UCI files, and backups
+- ✅ **Health Monitoring**: Enhanced container health checks and logging
 
 ### v1.0.0
 

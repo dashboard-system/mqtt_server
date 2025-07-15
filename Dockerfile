@@ -13,10 +13,11 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install npm dependencies
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy application code
 COPY src/ ./src/
+COPY .env ./
 
 # Create directories
 RUN mkdir -p logs uci uci_backup
@@ -29,7 +30,7 @@ RUN mkdir -p /etc/supervisor/conf.d
 COPY supervisord.conf /etc/supervisor/conf.d/
 
 # Expose ports
-EXPOSE 1883 3000
+EXPOSE 1883 3001
 
 # Start supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

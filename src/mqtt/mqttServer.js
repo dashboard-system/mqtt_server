@@ -340,7 +340,7 @@ class MQTTServer {
         }
       : {}
 
-    this.internalClient = mqtt.connect(`mqtt://localhost:${this.config.port}`, {
+    this.internalClient = mqtt.connect(`mqtt://127.0.0.1:${this.config.port}`, {
       clientId: 'UCI_INTERNAL_CLIENT',
       clean: true,
       connectTimeout: 5000,
