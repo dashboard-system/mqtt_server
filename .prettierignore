@@ -1,0 +1,11 @@
+node_modules/
+logs/
+uci_backup/
+coverage/
+package-lock.json
+.env
+*.log
+Dockerfile
+docker-compose.yml
+supervisord.conf
+*.md

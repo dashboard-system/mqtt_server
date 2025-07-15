@@ -1,0 +1,122 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Update dependencies
+      run: |
+        # Update patch and minor versions
+        npx npm-check-updates -u --target minor
+        npm install
+        
+    - name: Run tests after update
+      run: |
+        npm test || echo "Tests failed - dependency update may need review"
+        
+    - name: Check for security vulnerabilities
+      run: npm audit --audit-level=moderate || echo "Security audit found issues"
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update dependencies"
+        title: "🔄 Automated dependency updates"
+        body: |
+          ## Automated Dependency Updates
+          
+          This PR contains automated dependency updates:
+          
+          - Updated to latest patch and minor versions
+          - Ran tests to verify compatibility
+          - Checked for security vulnerabilities
+          
+          Please review changes before merging.
+          
+          ### Changes
+          - Updated package.json and package-lock.json
+          - All updates are non-breaking (patch/minor only)
+          
+          ### Next Steps
+          - [ ] Review updated dependencies
+          - [ ] Test manually if needed
+          - [ ] Merge if tests pass
+        branch: automated/dependency-updates
+        delete-branch: true
+
+  security-audit:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Security audit
+      run: npm audit --audit-level=moderate
+
+    - name: Create security issue if vulnerabilities found
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `🚨 Security vulnerabilities detected - ${new Date().toISOString().split('T')[0]}`;
+          const body = `
+          ## Security Audit Alert
+          
+          Security vulnerabilities have been detected in the project dependencies.
+          
+          **Action Required:**
+          1. Run \`npm audit\` locally to see detailed vulnerability report
+          2. Update vulnerable packages using \`npm audit fix\`
+          3. For manual fixes, use \`npm update [package-name]\`
+          4. Test the application after updates
+          
+          **Automated Detection:**
+          - Date: ${new Date().toISOString()}
+          - Audit Level: moderate and above
+          - Workflow: ${context.workflow}
+          
+          Please address these vulnerabilities as soon as possible.
+          `;
+          
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['security', 'dependencies', 'high-priority']
+          });

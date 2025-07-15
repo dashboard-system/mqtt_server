@@ -503,11 +503,64 @@ mqtt_server/
 ### Scripts
 
 ```bash
-npm start          # Start production server
-npm run dev        # Start development server with nodemon
-npm run setup      # Create directories and example files
-npm test           # Run tests (when implemented)
+# Development
+npm start              # Start production server
+npm run dev            # Start development server with nodemon
+npm run setup          # Create directories and example files
+
+# Testing
+npm test               # Run tests
+npm run test:watch     # Run tests in watch mode
+npm run test:coverage  # Run tests with coverage report
+
+# Code Quality
+npm run lint           # Run ESLint
+npm run lint:fix       # Fix ESLint issues automatically
+npm run format         # Format code with Prettier
+npm run format:check   # Check code formatting
+npm run security-check # Run security audit
+
+# Docker
+npm run docker:build     # Build Docker image
+npm run docker:run       # Run Docker container
+npm run docker:compose   # Start with Docker Compose
+npm run docker:stop      # Stop Docker Compose
+npm run docker:logs      # View Docker logs
+
+# Utilities
+npm run clean            # Clean logs and backup directories
+npm run health-check     # Check server health
 ```
+
+### GitHub Actions Workflows
+
+The project includes automated workflows for continuous integration and deployment:
+
+#### CI/CD Pipeline (`.github/workflows/ci.yml`)
+- **Triggers**: Push to main/develop, Pull requests
+- **Node.js Versions**: 18.x, 20.x
+- **Steps**: Install dependencies, lint, test, security audit, Docker build test
+- **Artifacts**: Build artifacts uploaded for 7 days
+
+#### Docker Build & Publish (`.github/workflows/docker.yml`)
+- **Triggers**: Push to main, version tags, Pull requests
+- **Platforms**: linux/amd64, linux/arm64
+- **Registry**: GitHub Container Registry (ghcr.io)
+- **Security**: Trivy vulnerability scanning
+- **Testing**: Health checks and MQTT connectivity tests
+
+#### Dependency Updates (`.github/workflows/dependencies.yml`)
+- **Schedule**: Weekly (Monday 9 AM UTC)
+- **Features**: Automated dependency updates, security audits
+- **PR Creation**: Automatic pull requests for updates
+- **Security**: Creates issues for vulnerabilities
+
+#### Workflow Features
+- Multi-platform Docker builds
+- Automated security scanning
+- Dependency vulnerability monitoring
+- Health check integration
+- Container registry publishing
 
 ### Adding New Features
 
@@ -515,6 +568,8 @@ npm test           # Run tests (when implemented)
 2. **Business Logic**: Extend `src/api/services/uciService.js`
 3. **UCI Processing**: Modify `src/uci/uciParser.js`
 4. **MQTT Features**: Extend `src/mqtt/mqttServer.js`
+5. **Tests**: Add tests in `__tests__/` or `*.test.js` files
+6. **CI/CD**: Workflows automatically run on code changes
 
 ## 📖 Examples
 

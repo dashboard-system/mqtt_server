@@ -1,0 +1,9 @@
+node_modules/
+logs/
+uci_backup/
+coverage/
+.env
+*.log
+Dockerfile
+docker-compose.yml
+supervisord.conf
