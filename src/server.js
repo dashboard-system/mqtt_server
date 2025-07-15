@@ -41,8 +41,8 @@ class UCIConfigurationServer {
 
       // Initialize Web Server
       this.webServer = new WebServer({
-        mqttUrl: `mqtt://localhost:${
-          process.env.MQTT_PORT || defaultMqttServer.host
+        mqttUrl: `mqtt://127.0.0.1:${
+          process.env.MQTT_PORT || defaultMqttServer.port
         }`,
       })
 

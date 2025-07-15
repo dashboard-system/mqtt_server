@@ -13,7 +13,7 @@ class WebServer {
       host: process.env.WEB_HOST || defaultUciHandleWebServer.host,
       mqttUrl:
         config.mqttUrl ||
-        `mqtt://localhost:${process.env.MQTT_PORT || defaultMqttServer.port}`,
+        `mqtt://127.0.0.1:${process.env.MQTT_PORT || defaultMqttServer.port}`,
       corsOrigin:
         process.env.CORS_ORIGIN || defaultUciHandleWebServer.corsOrigin,
       ...config,
