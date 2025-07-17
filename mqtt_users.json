@@ -1,18 +1,18 @@
 {
   "admin": {
-    "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+    "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
     "roles": ["admin"],
     "allowAll": true,
     "description": "Administrator with full access"
   },
   "client": {
-    "password": "948fe603f3199da2209e3ddf2d6ae0eb66c7d65e7cf74b66ae59b5c6ee0bbeb5",
+    "password": "186474c1f2c2f735a54c2cf82ee8e87f2a5cd30940e280029363fecedfc5328c",
     "roles": ["client"],
     "allowAll": false,
     "description": "Regular client with limited access"
   },
   "uci_internal": {
-    "password": "7b9c8c6f77c17c7b62e56b9d2f5db7a4e3c8f9a6b2d5e8f1c4a7b0e3d6f9c2e5",
+    "password": "c0c970ff523a1ed9730bc466eba2a4bd84998fbd0a26a9e461a4e4b3ebf8baed",
     "roles": ["internal"],
     "allowAll": true,
     "description": "Internal system client"

@@ -2,11 +2,12 @@ const fs = require('fs')
 const aedes = require('aedes')
 const { createServer } = require('net')
 const { createServer: createHttpServer } = require('http')
-const ws = require('ws')
+const ws = require('websocket-stream')
 const mqtt = require('mqtt')
 const crypto = require('crypto')
 const { SystemLogger } = require('../utils/logger')
 const { defaultUsers, defaultAcl } = require('../default')
+require('dotenv').config({ path: './.env' })
 
 class MQTTServer {
   constructor(config = {}) {
@@ -63,8 +64,10 @@ class MQTTServer {
 
       // Create WebSocket server for MQTT over WebSocket
       const httpServer = createHttpServer()
-      this.wsServer = new ws.Server({ server: httpServer })
-      this.wsServer.on('connection', this.broker.handle)
+      this.wsServer = ws.createServer(
+        { server: httpServer },
+        this.broker.handle,
+      )
 
       // Start both servers
       await this.startTcpServer()

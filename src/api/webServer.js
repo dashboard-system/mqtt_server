@@ -83,12 +83,20 @@ class WebServer {
 
   async connectToMQTT() {
     return new Promise((resolve, reject) => {
-      this.mqttClient = mqtt.connect(this.config.mqttUrl, {
+      const connectOptions = {
         clientId: 'UCI_WEB_SERVER',
         clean: true,
         connectTimeout: 5000,
         reconnectPeriod: 1000,
-      })
+      }
+
+      // Add authentication if enabled
+      if (process.env.MQTT_ENABLE_AUTH === 'true') {
+        connectOptions.username = 'uci_internal'
+        connectOptions.password = 'internal123'
+      }
+
+      this.mqttClient = mqtt.connect(this.config.mqttUrl, connectOptions)
 
       this.mqttClient.on('connect', () => {
         this.logger.info('Web server connected to MQTT')

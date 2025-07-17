@@ -28,6 +28,7 @@ class UCIConfigurationServer {
         port: parseInt(process.env.MQTT_PORT) || defaultMqttServer.port,
         wsPort: parseInt(process.env.MQTT_WS_PORT) || defaultMqttServer.wsPort,
         host: process.env.MQTT_HOST || defaultMqttServer.host,
+        enableAuth: process.env.MQTT_ENABLE_AUTH === 'true',
       })
 
       // Initialize UCI Manager with env config
