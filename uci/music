@@ -1,0 +1,29 @@
+config song 'song1'
+	option uuid 'e768a862-991e-401b-80ab-24fdae92a619'
+	option id 1
+	option title 'Bohemian Rhapsody
+	option artist Queen
+	option album 'A Night at the Opera
+	option duration 355
+	option cover 🎸
+	option src /songs/1.mp3
+
+config song 'song2'
+	option uuid 'fb6d910a-60c9-41f5-b33f-ed24fe52af87'
+	option id 2
+	option title 'Hotel California
+	option artist Eagles
+	option album 'Hotel California
+	option duration 391
+	option cover 🦅
+	option src /songs/2.mp3
+
+config song 'song3'
+	option uuid '45db03d6-77be-4cb1-bc68-c76eb921cd97'
+	option id 3
+	option title 'Stairway to Heaven
+	option artist 'Led Zeppelin
+	option album 'Led Zeppelin IV
+	option duration 482
+	option cover ⚡
+	option src /songs/3.mp3

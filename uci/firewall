@@ -1,6 +1,6 @@
 config defaults 'defaults_0'
 	option uuid 'a8b60b9f-cf67-41dc-a8e4-35969c8d02f2'
-	option syn_flood 1
+	option syn_flood 133
 	option input ACCEPT
 	option output ACCEPT
 	option forward REJECT
@@ -53,3 +53,10 @@ config rule 'rule_36'
 	option dest_port 22
 	option proto tcp
 	option target ACCEPT
+
+config defaults
+	option uuid 'ea835276-8780-4768-97bd-a8dbefdc7408'
+	option syn_flood 133
+	option input ACCEPT
+	option output ACCEPT
+	option forward REJECT

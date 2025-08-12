@@ -1,0 +1,24 @@
+config controls 'cockpit'
+	option uuid 'a7ec32e8-0c62-4de1-82b2-b5055293b29f'
+	option enabled 1
+	option brightness 75
+
+config controls 'cabin'
+	option uuid '194f6165-a46a-4560-be20-d0a719d72b18'
+	option enabled 1
+	option brightness 50
+
+config controls 'controls_6'
+	option uuid 'fc7cc90b-347e-43a3-8726-79a41706a339'
+	option enabled 0
+	option brightness 100
+
+config controls 'instrument'
+	option uuid '65fb9306-c8fa-48c5-9cd7-d31df695df44'
+	option enabled 1
+	option brightness 80
+
+config controls 'reading'
+	option uuid 'fc4f01e1-ce15-4f19-a539-b677434edb9e'
+	option enabled 0
+	option brightness 30

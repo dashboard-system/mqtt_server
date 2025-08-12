@@ -1,0 +1,20 @@
+config controls 'cockpit'
+	option uuid 'c52658a1-efc0-49b7-aace-8ab0bdfecd2f'
+	option enabled 1
+	option target_temp 21
+	option fan_speed 3
+	option mode cool
+
+config controls 'cabin'
+	option uuid '6fb8120e-eddc-4009-bcfe-a164db25ff3d'
+	option enabled 1
+	option target_temp 24
+	option fan_speed 2
+	option mode cool
+
+config controls 'cargo'
+	option uuid 'de7fb1b8-add0-46c1-b019-dd7ea0d14151'
+	option enabled 0
+	option target_temp 15
+	option fan_speed 1
+	option mode auto

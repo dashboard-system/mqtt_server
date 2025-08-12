@@ -5,6 +5,8 @@ config system 'system_0'
 	option ttylogin 0
 	option log_size 64
 	option urandom_seed 0
+	option greeting Welcome
+	option description hi
 
 config timeserver 'ntp'
 	option uuid '024e952f-ee0c-452f-b810-025cc8b03c4c'

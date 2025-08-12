@@ -14,5 +14,17 @@
   "wireless:wifi:wifi_0": "b2ede9ba-f5e0-470f-9b4c-2b035ef41909",
   "wireless:wifi:wifi_8": "f7d53f03-8219-4139-97bc-6319c6b67787",
   "wireless:wifi:wifi_15": "cf47cbfd-0ec2-4375-82a2-0ee39c8af97c",
-  "wireless:wifi:wifi_23": "0bbedca4-562d-4aad-a3e6-725ce7622d5f"
+  "wireless:wifi:wifi_23": "0bbedca4-562d-4aad-a3e6-725ce7622d5f",
+  "firewall:defaults:defaults_49": "ea835276-8780-4768-97bd-a8dbefdc7408",
+  "lights:controls:cockpit": "a7ec32e8-0c62-4de1-82b2-b5055293b29f",
+  "lights:controls:cabin": "194f6165-a46a-4560-be20-d0a719d72b18",
+  "lights:controls:controls_6": "fc7cc90b-347e-43a3-8726-79a41706a339",
+  "lights:controls:instrument": "65fb9306-c8fa-48c5-9cd7-d31df695df44",
+  "lights:controls:reading": "fc4f01e1-ce15-4f19-a539-b677434edb9e",
+  "ac:controls:cockpit": "c52658a1-efc0-49b7-aace-8ab0bdfecd2f",
+  "ac:controls:cabin": "6fb8120e-eddc-4009-bcfe-a164db25ff3d",
+  "ac:controls:cargo": "de7fb1b8-add0-46c1-b019-dd7ea0d14151",
+  "music:song:song1": "e768a862-991e-401b-80ab-24fdae92a619",
+  "music:song:song2": "fb6d910a-60c9-41f5-b33f-ed24fe52af87",
+  "music:song:song3": "45db03d6-77be-4cb1-bc68-c76eb921cd97"
 }
