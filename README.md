@@ -1,18 +1,36 @@
-# MQTT UCI Configuration Server
+# MQTT UCI Configuration Server - Aircraft Systems Hub
 
-A comprehensive MQTT-based configuration management system for UCI (Unified Configuration Interface) files. This server provides real-time configuration management through both MQTT messaging and REST API endpoints, with persistent UUID tracking and automatic file synchronization.
+[![MQTT](https://img.shields.io/badge/MQTT-enabled-orange)](https://mqtt.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-green)](https://nodejs.org/)
+[![WebSocket](https://img.shields.io/badge/WebSocket-ready-blue)](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
+[![Docker](https://img.shields.io/badge/Docker-ready-blue)](https://www.docker.com/)
+[![UCI](https://img.shields.io/badge/UCI-compatible-purple)](https://openwrt.org/docs/guide-user/base-system/uci)
+
+A comprehensive MQTT-based configuration management system for **Aircraft Systems Control**. This server provides real-time configuration management for aircraft lighting, climate, audio, and flight systems through MQTT messaging and REST API endpoints, with persistent UUID tracking and automatic file synchronization.
+
+> **Part of the [Dashboard System](https://github.com/dashboard-system/dashboard-root)** - Complete multi-service aircraft control platform.
 
 ## 🚀 Features
 
-- **MQTT Broker**: Built-in MQTT broker with WebSocket support
-- **UCI File Management**: Automatic parsing, validation, and publishing of UCI configurations
-- **REST API**: Full CRUD operations for UCI sections
+### Core MQTT & UCI Services
+- **MQTT Broker**: Built-in Aedes MQTT broker with WebSocket support
+- **UCI File Management**: Automatic parsing, validation, and publishing of aircraft configurations
+- **REST API**: Full CRUD operations for aircraft system sections
 - **Real-time Updates**: Live configuration changes via MQTT with retained messages
-- **Persistent UUIDs**: Consistent section identification across restarts
-- **File Watching**: Automatic reload when UCI files change on disk
-- **Automatic Backups**: File versioning before modifications
-- **WebSocket Support**: MQTT over WebSocket for web applications
-- **Environment Configuration**: Flexible configuration via environment variables
+- **Persistent UUIDs**: Consistent section identification across system restarts
+- **File Watching**: Automatic reload when UCI configuration files change
+- **Automatic Backups**: File versioning before any configuration modifications
+- **WebSocket Support**: MQTT over WebSocket for browser-based dashboard
+
+### Aircraft Systems Integration
+- **🏠 Lighting Systems**: Cockpit, cabin, instrument, and reading light control
+- **❄️ Climate Control**: Air conditioning, temperature, and fan management
+- **🎵 Audio Systems**: Music player, communication, and audio routing
+- **📊 Flight Data**: A429 flight data integration and display
+- **📶 Connectivity**: Bluetooth device management and pairing
+- **⚙️ System Configuration**: Aircraft-wide settings and preferences
+- **🔄 Real-time Sync**: Instant synchronization with dashboard interface
+- **🛡️ Secure Communication**: Protected MQTT topics with authentication
 
 ## 📋 Table of Contents
 
@@ -49,36 +67,39 @@ A comprehensive MQTT-based configuration management system for UCI (Unified Conf
 ### Docker (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/dashboard-system/mqtt_server
-cd mqtt_server
+# Part of dashboard-root multi-service setup
+git clone --recursive https://github.com/dashboard-system/dashboard-root
+cd dashboard-root
 
-# Start with Docker Compose
-docker-compose up -d
+# Initialize entire aircraft dashboard system
+./init.sh
 
-# Check status
+# Check all services status
 docker-compose ps
-docker-compose logs -f
+docker-compose logs -f mqtt-server
 ```
 
 ### Manual Installation
 
 ```bash
-# Clone and install
-git clone <repository>
-cd mqtt_server
+# From dashboard-root/mqtt_server directory
+cd dashboard-root/mqtt_server
 npm install
 
-# Start the server
+# Start the MQTT server
 npm start
+
+# Or start development server
+npm run dev
 ```
 
 **Access Points:**
 
-- **MQTT**: `mqtt://localhost:1883`
-- **MQTT WebSocket**: `ws://localhost:8883`
-- **REST API**: `http://localhost:3001`
-- **Health Check**: `http://localhost:3001/health`
+- **MQTT Broker**: `mqtt://localhost:1883` (IoT devices, aircraft systems)
+- **MQTT WebSocket**: `ws://localhost:8883` (Dashboard web interface)
+- **REST API**: `http://localhost:3001/api/` (Configuration management)
+- **Health Check**: `http://localhost:3001/health` (System monitoring)
+- **Dashboard Integration**: Automatic connection from webserver on port 3000
 
 ## 💻 Installation
 
@@ -293,26 +314,29 @@ All UCI sections are published to retained topics following this pattern:
 config/{fileName}/{sectionType}/{uuid}
 ```
 
-**Examples:**
+**Aircraft System Examples:**
 
-- `config/network/interface/12345678-1234-1234-1234-123456789abc`
-- `config/wireless/wifi-device/87654321-4321-4321-4321-cba987654321`
-- `config/firewall/rule/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+- `config/lights/cockpit/12345678-1234-1234-1234-123456789abc`
+- `config/climate/cabin/87654321-4321-4321-4321-cba987654321`
+- `config/audio/music/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee`
+- `config/flight/a429/bbbbbbbb-cccc-dddd-eeee-ffffffffffff`
+- `config/bluetooth/devices/cccccccc-dddd-eeee-ffff-000000000000`
 
 **Message Format:**
 
 ```json
 {
   "uuid": "12345678-1234-1234-1234-123456789abc",
-  "sectionType": "interface",
-  "sectionName": "lan",
-  "fileName": "network",
+  "sectionType": "cockpit",
+  "sectionName": "main_lighting",
+  "fileName": "lights",
   "values": {
-    "proto": "static",
-    "ifname": "eth0",
-    "ipaddr": "192.168.1.1",
-    "netmask": "255.255.255.0",
-    "dns": ["8.8.8.8", "8.8.4.4"]
+    "enabled": true,
+    "brightness": 75,
+    "color": "warm",
+    "zone": "pilot_area",
+    "dimming_enabled": true,
+    "auto_adjust": false
   },
   "lastModified": "2025-01-10T12:00:00.000Z"
 }
@@ -401,27 +425,40 @@ Server initialization information.
 
 UCI files are automatically enhanced with UUIDs:
 
-**Before:**
+**Before (Aircraft Lighting Configuration):**
 
 ```
-config interface 'lan'
-	option proto 'static'
-	option ifname 'eth0'
-	option ipaddr '192.168.1.1'
-	list dns '8.8.8.8'
-	list dns '8.8.4.4'
+config lights 'cockpit'
+	option zone 'pilot_area'
+	option brightness '75'
+	option color 'warm'
+	option enabled '1'
+	option dimming_enabled '1'
 ```
 
-**After:**
+**After (With UUID Enhancement):**
 
 ```
-config interface 'lan'
+config lights 'cockpit'
 	option uuid '12345678-1234-1234-1234-123456789abc'
-	option proto 'static'
-	option ifname 'eth0'
-	option ipaddr '192.168.1.1'
-	list dns '8.8.8.8'
-	list dns '8.8.4.4'
+	option zone 'pilot_area'
+	option brightness '75'
+	option color 'warm'
+	option enabled '1'
+	option dimming_enabled '1'
+	option auto_adjust '0'
+```
+
+**Climate Control Example:**
+
+```
+config climate 'cabin'
+	option uuid '87654321-4321-4321-4321-cba987654321'
+	option temperature '22'
+	option fan_speed '3'
+	option mode 'auto'
+	option zone 'passenger_area'
+	option humidity_control '1'
 ```
 
 ### Supported UCI Elements
@@ -672,6 +709,10 @@ docker-compose restart
 ## 📝 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+> **Part of the [Dashboard System](https://github.com/dashboard-system/dashboard-root)** - Complete multi-service aircraft control platform with real-time MQTT communication and modern web interface.
 
 ## 🤝 Contributing
 
